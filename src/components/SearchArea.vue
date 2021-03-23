@@ -1,13 +1,23 @@
 <template>
   <div class="areaSearch">
     <div class="containerSearch">
-      <input
-        id="search"
-        type="text"
-        name="search"
-        placeholder="Digite o filme que deseja encontrar!"
-      />
-      <img src="@/assets/lupa.png" alt="Lupa search" />
+      <div class="bgSearch">
+        <div>
+          <h1>Bem vindo(a)!</h1>
+          <h2>
+            Informações sobre seus filmes e séries favoritos você encontra aqui!
+          </h2>
+        </div>
+        <div class="search">
+          <input
+            id="search"
+            type="text"
+            name="search"
+            placeholder="Digite o filme que deseja encontrar!"
+          />
+          <button type="button">Pesquisar</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -16,28 +26,61 @@
 export default {};
 </script>
 
-<style>
+<style scoped>
 .areaSearch {
-  padding-top: 15px;
+  height: 500px;
 }
 .containerSearch {
+  height: inherit;
   width: 100%;
   max-width: 1200px;
   margin: auto;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+  background-image: url(../assets/imgfilmwow.jpg);
+  background-size: cover;
+  background-position: center;
+}
+.bgSearch {
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  padding: 0px 30px;
+}
+h1 {
+  color: #fff;
+  font-size: 70px;
+  margin-bottom: 0px;
+}
+h2 {
+  color: #fff;
+}
+.search {
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 input {
   border: 0 none;
   outline: 0 none;
-  padding: 5px;
-  width: 300px;
-  border-bottom: 2px solid black;
-  background-color: transparent;
+  padding: 15px;
+  flex: 1;
   font-size: 15px;
+  background-color: #fff;
+  border-radius: 20px 0px 0px 20px;
 }
-img {
-  width: 25px;
+button {
+  height: 100%;
+  width: 110px;
+  outline: 0 none;
+  border: 0 none;
+  border-radius: 0px 20px 20px 0px;
+  background-color: #ff0000;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>

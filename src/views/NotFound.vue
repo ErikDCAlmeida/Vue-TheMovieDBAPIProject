@@ -1,5 +1,5 @@
 <template>
-  <div class="areaBotFound">
+  <div class="areaNotFound">
     <h1>Oops!</h1>
     <h2>404 - PAGE NOT FOUND</h2>
     <span
@@ -13,6 +13,9 @@
 </template>
 
 <style scoped>
+.areaNotFound {
+  text-align: center;
+}
 h1 {
   font-size: 100px;
 }
@@ -32,9 +35,16 @@ span {
 a {
   text-decoration: none;
   padding: 15px 30px;
-  background: #2c3e50;
-  color: #fff;
+  border: 2px solid #2c3e50;
+  background: transparent;
+  color: #2c3e50;
   border-radius: 5px;
   font-size: 17px;
+  font-weight: 600;
+}
+a:hover {
+  border: 2px solid transparent;
+  background: #2c3e50;
+  color: #fff;
 }
 </style>
