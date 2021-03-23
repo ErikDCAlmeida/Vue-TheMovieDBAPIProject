@@ -80,7 +80,8 @@ header {
   padding: 0px 0px;
 }
 
-.menu a:hover {
+.menu a:hover,
+.menu .router-link-exact-active {
   border-bottom: 3px solid #ff0000;
   color: #ff0000;
 }

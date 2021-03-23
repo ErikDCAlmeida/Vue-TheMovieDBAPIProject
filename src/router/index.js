@@ -20,7 +20,20 @@ const routes = [
     path: "/favourites",
     name: "Favourites",
     component: () =>
-      import(/* webpackChunkName: "favortios" */ "../views/Favourites.vue"),
+      import(/* webpackChunkName: "favourites" */ "../views/Favourites.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () =>
+      import(/* webpackChunkName: "notfound" */ "../views/NotFound.vue"),
+  },
+  // if you omit the last `*`, the `/` character in params will be encoded when resolving or pushing
+  {
+    path: "/:pathMatch(.*)",
+    name: "bad-not-found",
+    component: () =>
+      import(/* webpackChunkName: "notfound" */ "../views/NotFound.vue"),
   },
 ];
 
