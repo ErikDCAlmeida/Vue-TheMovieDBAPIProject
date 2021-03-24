@@ -23,6 +23,14 @@ const routes = [
       import(/* webpackChunkName: "favourites" */ "../views/Favourites.vue"),
   },
   {
+    path: "/movie/:id",
+    name: "MovieDetails",
+    component: () =>
+      import(
+        /* webpackChunkName: "moviedetails" */ "../views/MovieDetails.vue"
+      ),
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "not-found",
     component: () =>

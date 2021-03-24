@@ -8,15 +8,15 @@
             Informações sobre seus filmes e séries favoritos você encontra aqui!
           </h2>
         </div>
-        <div class="search">
+        <form @submit.prevent="">
           <input
             id="search"
             type="text"
             name="search"
             placeholder="Digite o filme que deseja encontrar!"
           />
-          <button type="button">Pesquisar</button>
-        </div>
+          <button type="submit">Pesquisar</button>
+        </form>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@ h1 {
 h2 {
   color: #fff;
 }
-.search {
+form {
   width: 100%;
   display: flex;
   align-items: center;
