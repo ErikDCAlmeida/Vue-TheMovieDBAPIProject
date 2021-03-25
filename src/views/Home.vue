@@ -3,17 +3,21 @@
     <SearchArea />
     <main>
       <section>
-        <div class="areaFilms">
+        <div class="areaMovies">
           <div class="titleArea">Filmes Mais Populares</div>
           <div class="areaHome">
-            <div class="films">
-              <div class="film" v-for="movie in apiData" :key="movie.id">
+            <div class="movies">
+              <div class="movie" v-for="movie in apiData" :key="movie.id">
                 <router-link :to="'/movie/' + movie.id">
                   <img
-                    :src="path + movie.poster_path"
-                    alt="imageFilm{{ movie.title }}"
+                    :src="
+                      path + movie.poster_path != null
+                        ? path + movie.poster_path
+                        : '@/assets/noImageAvailable.jpg'
+                    "
+                    :alt="'imageMovie' + movie.title"
                   />
-                  <div class="infosFilm">
+                  <div class="infosMovie">
                     <span class="titleMovie">{{ movie.title }}</span>
                     <span>{{
                       movie.release_date.split("-").reverse().join("/")
@@ -85,7 +89,7 @@ export default {
 footer {
   height: 400px;
 }
-.areaFilms {
+.areaMovies {
   width: 100%;
   max-width: 1200px;
   margin: auto;
@@ -97,41 +101,41 @@ footer {
   margin: 15px 10px;
   font-weight: bold;
 }
-.films {
+.movies {
   display: flex;
   overflow-x: scroll;
   padding: 15px;
 }
-.film {
+.movie {
   width: 200px;
   margin-right: 40px;
 }
-.film:last-child {
+.movie:last-child {
   margin-right: 0px;
 }
-.film a {
+.movie a {
   width: inherit;
   text-decoration: none;
   color: #000;
 }
-.film img {
+.movie img {
   width: inherit;
   height: 300px;
   border-radius: 20px;
 }
-.infosFilm {
+.infosMovie {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.infosFilm .titleMovie {
+.infosMovie .titleMovie {
   margin: 10px 0px;
   font-size: 17px;
   font-weight: 600;
-  height: 40px;
+  height: 60px;
   text-align: center;
 }
-.infosFilm span {
+.infosMovie span {
   margin-bottom: 10px;
   font-weight: 600;
 }

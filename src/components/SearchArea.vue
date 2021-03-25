@@ -1,6 +1,11 @@
 <template>
   <div class="areaSearch">
-    <div class="containerSearch">
+    <div
+      class="containerSearch"
+      :style="{
+        backgroundImage: 'url(' + pathMovieImage + ')',
+      }"
+    >
       <div class="bgSearch">
         <div>
           <h1>Bem vindo(a)!</h1>
@@ -25,12 +30,14 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import ApiKey from "@/ApiKey.js";
 
 export default {
   setup() {
     const search = ref("");
+    const movie = ref({});
+    const pathMovieImage = ref("");
 
     const searchMovies = () => {
       if (search.value != "") {
@@ -44,9 +51,24 @@ export default {
       }
     };
 
+    const randomPage = Math.floor(Math.random() * (500 - 2) + 2);
+    onBeforeMount(
+      fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${randomPage}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          pathMovieImage.value =
+            "http://image.tmdb.org/t/p/original" +
+            data.results.shift().backdrop_path;
+        })
+    );
+
     return {
       search,
       searchMovies,
+      movie,
+      pathMovieImage,
     };
   },
 };
@@ -62,7 +84,6 @@ export default {
   max-width: 1200px;
   margin: auto;
   display: flex;
-  background-image: url(../assets/imgfilmwow.jpg);
   background-size: cover;
   background-position: center;
 }

@@ -2,14 +2,14 @@
   <div
     class="movieDetails"
     :style="{
-      backgroundImage: 'url(' + imageBanner + ')',
+      backgroundImage: 'url(' + pathBannerImage + ')',
     }"
   >
     <div class="bgMovie">
       <div class="containerMovieDetails">
         <div class="movie">
           <div class="imgMovie">
-            <img :src="imagePoster" alt="imageBigFilm{{ movie.title }}" />
+            <img :src="pathPosterImage" :alt="movie.title" />
           </div>
           <div class="infosMovie">
             <div class="mainInfoTitle">
@@ -49,11 +49,6 @@ import { useRoute } from "vue-router";
 import ApiKey from "@/ApiKey.js";
 
 export default {
-  data() {
-    return {
-      path: "http://image.tmdb.org/t/p/original",
-    };
-  },
   computed: {
     yearMovie: function () {
       let year = "";
@@ -66,17 +61,12 @@ export default {
       }
       return year;
     },
-    imageBanner: function () {
-      return this.path + this.movie.backdrop_path;
-    },
-    imagePoster: function () {
-      return this.path + this.movie.poster_path;
-    },
   },
   setup() {
     const movie = ref({});
-    const author = ref([]);
     const route = useRoute();
+    const pathBannerImage = ref("");
+    const pathPosterImage = ref("");
 
     onBeforeMount(
       fetch(
@@ -85,12 +75,17 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           movie.value = data;
+          pathBannerImage.value =
+            "http://image.tmdb.org/t/p/original" + data.backdrop_path;
+          pathPosterImage.value =
+            "http://image.tmdb.org/t/p/original" + data.poster_path;
         })
     );
 
     return {
       movie,
-      author,
+      pathBannerImage,
+      pathPosterImage,
     };
   },
 };
@@ -109,6 +104,7 @@ export default {
   width: 100%;
   max-width: 1200px;
   margin: auto;
+  padding: 0px 10px;
 }
 .movie {
   display: flex;
