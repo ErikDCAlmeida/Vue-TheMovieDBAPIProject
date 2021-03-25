@@ -1,32 +1,42 @@
 <template>
-  <div class="movieDetails">
+  <div
+    class="movieDetails"
+    :style="{
+      backgroundImage: 'url(' + imageBanner + ')',
+    }"
+  >
     <div class="bgMovie">
       <div class="containerMovieDetails">
         <div class="movie">
           <div class="imgMovie">
-            <img src="@/assets/imageFilmExample.jpg" alt="bigImgMovie" />
+            <img :src="imagePoster" alt="imageBigFilm{{ movie.title }}" />
           </div>
           <div class="infosMovie">
-            <div class="titleMovie">Titulo do Filme (ano)</div>
-            <div class="descMovie">Descrição do Filme</div>
-            <div class="porcentMovie">
-              <div class="rate">
-                <span class="titPercent">Avaliação</span>
-                <div class="rateBar">
-                  <span>50%</span>
-                </div>
-              </div>
-              <div class="popularity">
-                <span class="titPercent">Avaliação usuários</span>
-                <div class="rateBar">
-                  <span>50%</span>
-                </div>
+            <div class="mainInfoTitle">
+              <div class="titleMovie">{{ movie.title }} ({{ yearMovie }})</div>
+              <div class="favorite">FV</div>
+            </div>
+            <div class="descMovie">{{ movie.overview }}</div>
+            <div class="popularity">
+              <span class="titPercent">Avaliação dos usuários</span>
+              <div
+                class="rateBar"
+                :style="{
+                  background: `linear-gradient(90deg, #ff0000 ${Math.floor(
+                    movie.vote_average * 10
+                  )}%, #ffffff ${100 - Math.floor(movie.vote_average * 10)}%)`,
+                }"
+              >
+                <span>{{ movie.vote_average * 10 }}%</span>
               </div>
             </div>
           </div>
         </div>
         <div class="linkHome">
-          <router-link to="/">&larr; Voltar ao início!</router-link>
+          <router-link to="/">
+            <div class="arrow"></div>
+            Voltar ao início!
+          </router-link>
         </div>
       </div>
     </div>
@@ -34,18 +44,65 @@
 </template>
 
 <script>
-export default {};
+import { ref, onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
+import ApiKey from "@/ApiKey.js";
+
+export default {
+  data() {
+    return {
+      path: "http://image.tmdb.org/t/p/original",
+    };
+  },
+  computed: {
+    yearMovie: function () {
+      let year = "";
+      for (let i in this.movie.release_date) {
+        if (year.length === 4) {
+          break;
+        } else {
+          year += this.movie.release_date[i];
+        }
+      }
+      return year;
+    },
+    imageBanner: function () {
+      return this.path + this.movie.backdrop_path;
+    },
+    imagePoster: function () {
+      return this.path + this.movie.poster_path;
+    },
+  },
+  setup() {
+    const movie = ref({});
+    const author = ref([]);
+    const route = useRoute();
+
+    onBeforeMount(
+      fetch(
+        `https://api.themoviedb.org/3/movie/${route.params.id}?api_key=${ApiKey.apikey}&language=pt-BR`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          movie.value = data;
+        })
+    );
+
+    return {
+      movie,
+      author,
+    };
+  },
+};
 </script>
 
 <style scoped>
 .movieDetails {
-  background-image: url(../assets/imageFilmExample.jpg);
   background-size: cover;
   background-position: center;
-  background-position-y: -700px;
 }
 .bgMovie {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   padding: 10px 0px;
 }
 .containerMovieDetails {
@@ -67,7 +124,15 @@ export default {};
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  padding: 10px;
+  padding-left: 40px;
+}
+.mainInfoTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.favorite {
+  background: green;
 }
 .titleMovie {
   font-weight: bold;
@@ -75,34 +140,30 @@ export default {};
 }
 .descMovie {
   font-size: 20px;
+  text-align: justify;
 }
-.porcentMovie {
-  display: flex;
-}
-.rate {
-  flex: 1;
-  margin-right: 10px;
+.titPercent {
+  font-size: 15px;
+  font-weight: bold;
 }
 .popularity {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 50px;
+  justify-content: space-between;
 }
 .rateBar {
   border-radius: 10px;
   text-align: center;
   color: #000;
   font-weight: bold;
-  background: linear-gradient(90deg, #ff0000 50%, #fff 50%);
+  width: 200px;
 }
 .linkHome {
   height: 70px;
   display: flex;
   align-items: center;
   padding-left: 5px;
-}
-.titPercent {
-  margin: 0px 0px 0px 10px;
-  font-size: 16px;
-  font-weight: 600;
 }
 a {
   padding: 12px 30px;
@@ -111,8 +172,16 @@ a {
   border-radius: 5px;
   color: #fff;
   text-decoration: none;
+  display: flex;
+  align-items: center;
 }
 a:hover {
   background: #ff0000;
+}
+.arrow {
+  border-right: 10px solid;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  margin-right: 10px;
 }
 </style>

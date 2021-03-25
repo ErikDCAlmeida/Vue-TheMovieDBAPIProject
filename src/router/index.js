@@ -44,7 +44,6 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "notfound" */ "../views/NotFound.vue"),
   },
-  // if you omit the last `*`, the `/` character in params will be encoded when resolving or pushing
   {
     path: "/:pathMatch(.*)",
     name: "bad-not-found",

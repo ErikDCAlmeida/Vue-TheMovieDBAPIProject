@@ -8,7 +8,7 @@
           <div class="areaHome">
             <div class="films">
               <div class="film" v-for="movie in apiData" :key="movie.id">
-                <router-link :to="'/movie/' + movie.title">
+                <router-link :to="'/movie/' + movie.id">
                   <img
                     :src="path + movie.poster_path"
                     alt="imageFilm{{ movie.title }}"
@@ -21,11 +21,9 @@
                     <div
                       class="rate"
                       :style="{
-                        background: `linear-gradient(90deg, red ${Math.floor(
+                        background: `linear-gradient(90deg, #ff0000 ${
                           movie.vote_average * 10
-                        )}%, white ${Math.floor(
-                          100 - movie.vote_average * 10
-                        )}%)`,
+                        }%, #ffffff ${100 - movie.vote_average * 10}%)`,
                       }"
                     >
                       <span>{{ Math.floor(movie.vote_average * 10) }}%</span>
@@ -37,8 +35,9 @@
           </div>
           <div>
             <router-link to="/movies/popular" class="allPopularLink"
-              >Ver todos os filmes populares! &rarr;</router-link
-            >
+              >Ver todos os filmes populares!
+              <div class="arrow"></div>
+            </router-link>
           </div>
         </div>
       </section>
@@ -66,7 +65,7 @@ export default {
   setup() {
     const apiData = ref([]);
 
-    const randomPage = Math.floor(Math.random() * 500);
+    const randomPage = Math.floor(Math.random() * (500 - 2) + 2);
     fetch(
       `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${randomPage}`
     )
@@ -130,6 +129,7 @@ footer {
   font-size: 17px;
   font-weight: 600;
   height: 40px;
+  text-align: center;
 }
 .infosFilm span {
   margin-bottom: 10px;
@@ -156,9 +156,16 @@ footer {
   font-size: 15px;
   font-weight: 600;
   color: #ff0000;
+  align-items: center;
 }
 .allPopularLink:hover {
   background: #ff0000;
   color: #ffffff;
+}
+.arrow {
+  border-left: 10px solid;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  margin-left: 10px;
 }
 </style>
