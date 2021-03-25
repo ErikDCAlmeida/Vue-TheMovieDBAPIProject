@@ -8,12 +8,14 @@
             Informações sobre seus filmes e séries favoritos você encontra aqui!
           </h2>
         </div>
-        <form @submit.prevent="">
+        <form @submit.prevent="searchMovies()">
           <input
             id="search"
             type="text"
             name="search"
             placeholder="Digite o filme que deseja encontrar!"
+            v-model="search"
+            autocomplete="off"
           />
           <button type="submit">Pesquisar</button>
         </form>
@@ -23,7 +25,31 @@
 </template>
 
 <script>
-export default {};
+import { ref } from "vue";
+import ApiKey from "@/ApiKey.js";
+
+export default {
+  setup() {
+    const search = ref("");
+
+    const searchMovies = () => {
+      if (search.value != "") {
+        fetch(
+          `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=1`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          });
+      }
+    };
+
+    return {
+      search,
+      searchMovies,
+    };
+  },
+};
 </script>
 
 <style scoped>

@@ -26,6 +26,7 @@ export default {
 body {
   margin: 0;
   padding: 0;
+  scrollbar-color: red blue;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

@@ -31,6 +31,14 @@ const routes = [
       ),
   },
   {
+    path: "/movies/popular",
+    name: "PopularMovies",
+    component: () =>
+      import(
+        /* webpackChunkName: "popularmovies" */ "../views/PopularMovies.vue"
+      ),
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "not-found",
     component: () =>

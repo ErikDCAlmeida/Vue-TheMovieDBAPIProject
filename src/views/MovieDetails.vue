@@ -7,8 +7,8 @@
             <img src="@/assets/imageFilmExample.jpg" alt="bigImgMovie" />
           </div>
           <div class="infosMovie">
-            <div class="titleMovie">{{ $route.params.id }} (ano)</div>
-            <div class="descMovie">Desc Filme</div>
+            <div class="titleMovie">Titulo do Filme (ano)</div>
+            <div class="descMovie">Descrição do Filme</div>
             <div class="porcentMovie">
               <div class="rate">
                 <span class="titPercent">Avaliação</span>
