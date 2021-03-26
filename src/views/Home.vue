@@ -10,11 +10,7 @@
               <div class="movie" v-for="movie in apiData" :key="movie.id">
                 <router-link :to="'/movie/' + movie.id">
                   <img
-                    :src="
-                      path + movie.poster_path != null
-                        ? path + movie.poster_path
-                        : '@/assets/noImageAvailable.jpg'
-                    "
+                    :src="path + movie.poster_path"
                     :alt="'imageMovie' + movie.title"
                   />
                   <div class="infosMovie">
