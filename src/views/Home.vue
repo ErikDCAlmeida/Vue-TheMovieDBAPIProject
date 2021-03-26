@@ -18,15 +18,23 @@
                     <span>{{
                       movie.release_date.split("-").reverse().join("/")
                     }}</span>
-                    <div
-                      class="rate"
-                      :style="{
-                        background: `linear-gradient(90deg, #ff0000 ${
-                          movie.vote_average * 10
-                        }%, #ffffff ${100 - movie.vote_average * 10}%)`,
-                      }"
-                    >
-                      <span>{{ Math.floor(movie.vote_average * 10) }}%</span>
+                    <div class="rate">
+                      <div
+                        class="rateBarPercent"
+                        :style="{
+                          backgroundColor: '#ff0000',
+                          width: Math.floor(movie.vote_average * 10) + '%',
+                          height: '16px',
+                          borderRadius: '15px',
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                          paddingLeft: '5px',
+                        }"
+                      >
+                        <strong>
+                          {{ Math.floor(movie.vote_average * 10) }}%
+                        </strong>
+                      </div>
                     </div>
                   </div>
                 </router-link>
@@ -42,7 +50,6 @@
         </div>
       </section>
     </main>
-    <footer></footer>
   </div>
 </template>
 
@@ -82,9 +89,6 @@ export default {
 </script>
 
 <style scoped>
-footer {
-  height: 400px;
-}
 .areaMovies {
   width: 100%;
   max-width: 1200px;
@@ -136,13 +140,9 @@ footer {
   font-weight: 600;
 }
 .rate {
-  width: 90%;
-  text-align: center;
-  border-radius: 5px;
+  width: 180px;
+  border-radius: 15px;
   border: 2px solid #000;
-}
-.rate span {
-  font-weight: bold;
 }
 .allPopularLink {
   margin-top: 10px;

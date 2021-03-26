@@ -58,14 +58,9 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          if (data.results.shift().backdrop_path != null) {
-            pathMovieImage.value =
-              "http://image.tmdb.org/t/p/original" +
-              data.results.shift().backdrop_path;
-          } else {
-            pathMovieImage.value = "@/assets/imageDefaultBanner.jpg";
-            console.log(pathMovieImage.value);
-          }
+          pathMovieImage.value =
+            "http://image.tmdb.org/t/p/original" +
+            data.results.shift().backdrop_path;
         })
     );
 
