@@ -7,13 +7,13 @@
       }"
     >
       <div class="bgSearch">
-        <div>
+        <div class="textSearch">
           <h1>Bem vindo(a)!</h1>
           <h2>
             Informações sobre seus filmes e séries favoritos você encontra aqui!
           </h2>
         </div>
-        <form @submit.prevent="searchMovies()">
+        <div class="areaSearchMovie">
           <input
             id="search"
             type="text"
@@ -22,8 +22,10 @@
             v-model="search"
             autocomplete="off"
           />
-          <button type="submit">Pesquisar</button>
-        </form>
+          <router-link @click="searchMovies()" :to="'/searchresults/' + search">
+            Pesquisar</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -36,17 +38,18 @@ import ApiKey from "@/ApiKey.js";
 export default {
   setup() {
     const search = ref("");
-    const movie = ref({});
+    const movies = ref({});
     const pathMovieImage = ref("");
 
     const searchMovies = () => {
       if (search.value != "") {
         fetch(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=1`
+          `https://api.themoviedb.org/3/search/movie?api_key=${ApiKey.apikey}&language=pt-BR&query=${search.value}&include_adult=false`
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
+            movies.value = data;
+            search.value = "";
           });
       }
     };
@@ -61,13 +64,13 @@ export default {
           pathMovieImage.value =
             "http://image.tmdb.org/t/p/original" +
             data.results.shift().backdrop_path;
-        })
+        }),
     );
 
     return {
       search,
       searchMovies,
-      movie,
+      movies,
       pathMovieImage,
     };
   },
@@ -96,6 +99,9 @@ export default {
   justify-content: space-evenly;
   padding: 0px 30px;
 }
+.textSearch {
+  width: 100%;
+}
 h1 {
   color: #fff;
   font-size: 70px;
@@ -104,7 +110,7 @@ h1 {
 h2 {
   color: #fff;
 }
-form {
+.areaSearchMovie {
   width: 100%;
   display: flex;
   align-items: center;
@@ -118,16 +124,18 @@ input {
   background-color: #fff;
   border-radius: 20px 0px 0px 20px;
 }
-button {
+a {
   height: 100%;
   width: 110px;
-  outline: 0 none;
-  border: 0 none;
   border-radius: 0px 20px 20px 0px;
   background-color: #ff0000;
+  text-decoration: none;
   color: #fff;
   font-weight: bold;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 </style>

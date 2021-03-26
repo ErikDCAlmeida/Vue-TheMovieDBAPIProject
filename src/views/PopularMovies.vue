@@ -9,42 +9,134 @@
       </router-link>
     </div>
     <h2 class="titleArea">Filmes Populares</h2>
-    <div class="areaMovies">
-      <div class="movie">
-        <router-link to="/movie/0">
-          <div class="imgMovie">
-            <img src="@/assets/noImageAvailable.jpg" alt="" />
-          </div>
-          <div class="titleMovie">
-            Título do Filme Bem Grande Para Pegar o Máximo
-          </div>
-        </router-link>
-        <div class="rate">
-          <div
-            class="rateBarPercent"
-            :style="{
-              backgroundColor: '#ff0000',
-              width: '100%',
-              height: '16px',
-              borderRadius: '15px',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              paddingLeft: '5px',
-            }"
-          >
-            <strong> 50% </strong>
+    <div class="mainArea">
+      <div class="btnSeeLess">
+        <button
+          type="button"
+          @click="
+            seeLessOnePage();
+            forceTheRenderElement();
+          "
+        >
+          <div class="arrowLess"></div>
+        </button>
+      </div>
+      <div class="areaMovies" :key="elementToRerender">
+        <div
+          class="movie"
+          v-for="movie in popularMovies"
+          :key="'movie-' + movie.title"
+        >
+          <router-link :to="'/movie/' + movie.id">
+            <div class="imgMovie">
+              <img
+                :src="path + movie.poster_path"
+                :alt="'imageMovie' + movie.title"
+              />
+            </div>
+            <div class="titleMovie">
+              {{ movie.title }}
+            </div>
+          </router-link>
+          <div class="rate">
+            <div
+              class="rateBarPercent"
+              :style="{
+                backgroundColor: '#ff0000',
+                width: Math.floor(movie.vote_average * 10) + '%',
+                height: '16px',
+                borderRadius: '15px',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                paddingLeft: '5px',
+              }"
+            >
+              <strong> {{ Math.floor(movie.vote_average * 10) }}% </strong>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="btnSeeMore">
-      <button type="button">Ver Mais</button>
+      <div class="btnSeeMore">
+        <button
+          type="button"
+          @click="
+            seeMoreOnePage();
+            forceTheRenderElement();
+          "
+        >
+          <div class="arrowMore"></div>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { ref } from "vue";
+import ApiKey from "@/ApiKey.js";
+
+export default {
+  data() {
+    return {
+      path: "http://image.tmdb.org/t/p/original",
+      elementToRerender: 0,
+    };
+  },
+  methods: {
+    forceTheRenderElement() {
+      this.elementToRerender += 1;
+    },
+  },
+  setup() {
+    let popularMovies = ref([]);
+    const atualPages = ref([]);
+    const pageNow = ref(1);
+
+    fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=1`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        popularMovies.value = data.results;
+      });
+
+    const seeMoreOnePage = () => {
+      console.log("more antes: " + pageNow.value);
+      pageNow.value += 1;
+      console.log("more depois: " + pageNow.value);
+      fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${pageNow.value}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          popularMovies.value = data.results;
+        });
+    };
+
+    const seeLessOnePage = () => {
+      if (pageNow.value > 1) {
+        console.log("less antes: " + pageNow.value);
+        pageNow.value -= 1;
+        console.log("less antes: " + pageNow.value);
+        fetch(
+          `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${pageNow.value}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            popularMovies.value = data.results;
+          });
+      }
+    };
+
+    return {
+      popularMovies,
+      seeMoreOnePage,
+      seeLessOnePage,
+      atualPages,
+      pageNow,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -74,14 +166,25 @@ export default {};
   color: #ffffff;
   cursor: pointer;
 }
-.btnBackToHome button:hover {
-  color: #ff0000;
-}
-.arrow {
+.arrow,
+.arrowLess {
   border-right: 10px solid;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   margin-right: 10px;
+}
+.arrowLess {
+  border-right: 10px solid;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+.arrowMore {
+  border-left: 10px solid;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+.mainArea {
+  display: flex;
 }
 .titleArea {
   font-size: 30px;
@@ -110,7 +213,7 @@ export default {};
 }
 .imgMovie img {
   width: 200px;
-  height: 250px;
+  height: 300px;
   border-radius: 10px;
   box-shadow: 0px 0px 2px 2px #000;
 }
@@ -122,27 +225,35 @@ export default {};
   height: 70px;
   display: flex;
   align-items: center;
+  justify-content: center;
   text-align: center;
+  font-weight: bold;
 }
-.btnSeeMore {
-  margin: 25px 0px;
+.rate {
+  width: 90%;
+  border: 2px solid #000;
+  border-radius: 15px;
+}
+.btnSeeMore,
+.btnSeeLess {
   display: flex;
   justify-content: center;
 }
-.btnSeeMore button {
+.btnSeeMore button,
+.btnSeeLess button {
   border: none;
   outline: none;
-  padding: 15px 100px;
-  border: 2px solid #ff0000;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #ff0000;
+  width: 50px;
+  background: transparent;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0px;
   cursor: pointer;
 }
-.btnSeeMore button:hover {
-  background-color: #ff0000;
-  color: #ffffff;
+.btnSeeMore button:hover,
+.btnSeeLess button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 </style>
