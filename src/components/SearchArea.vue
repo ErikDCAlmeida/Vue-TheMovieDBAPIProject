@@ -38,19 +38,13 @@ import ApiKey from "@/ApiKey.js";
 export default {
   setup() {
     const search = ref("");
-    const movies = ref({});
     const pathMovieImage = ref("");
 
     const searchMovies = () => {
       if (search.value != "") {
-        fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=${ApiKey.apikey}&language=pt-BR&query=${search.value}&include_adult=false`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            movies.value = data;
-            search.value = "";
-          });
+        this.$router.push({
+          path: "/searchresults/" + search.value,
+        });
       }
     };
 
@@ -64,17 +58,75 @@ export default {
           pathMovieImage.value =
             "http://image.tmdb.org/t/p/original" +
             data.results.shift().backdrop_path;
-        }),
+        })
     );
 
     return {
       search,
       searchMovies,
-      movies,
       pathMovieImage,
     };
   },
 };
+
+/*
+data() {
+    return {
+      search: "",
+    };
+  },
+  setup() {
+    const pathMovieImage = ref("");
+
+    const randomPage = Math.floor(Math.random() * (500 - 2) + 2);
+    fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${randomPage}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        pathMovieImage.value =
+          "http://image.tmdb.org/t/p/original" +
+          data.results.shift().backdrop_path;
+      });
+
+    const searchMovies = function () {
+      if (!this.search) {
+        this.$router.push({
+          path: "/searchresults/" + this.search,
+        });
+      }
+    };
+
+    return {
+      pathMovieImage,
+      searchMovies,
+    };
+  },
+
+  /*data() {
+    return {
+      pathMovieImage: "",
+    };
+  },
+  methods: {
+    searchMovies: function () {
+      this.$router.push({
+        path: "/searchresults/" + this.search,
+      });
+    },
+  },
+  created() {
+    const randomPage = Math.floor(Math.random() * (500 - 2) + 2);
+    fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${randomPage}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        this.pathMovieImage =
+          "http://image.tmdb.org/t/p/original" +
+          data.results.shift().backdrop_path;
+      });
+  },*/
 </script>
 
 <style scoped>

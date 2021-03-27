@@ -10,12 +10,18 @@
               <div class="movie" v-for="movie in apiData" :key="movie.id">
                 <router-link :to="'/movie/' + movie.id">
                   <img
+                    v-if="movie.poster_path != null"
                     :src="path + movie.poster_path"
                     :alt="'imageMovie' + movie.title"
                   />
+                  <img
+                    v-else
+                    src="../assets/noImageAvailable.jpg"
+                    :alt="'imageMovie-noImageMovie'"
+                  />
                   <div class="infosMovie">
                     <span class="titleMovie">{{ movie.title }}</span>
-                    <span>{{
+                    <span class="date">{{
                       movie.release_date.split("-").reverse().join("/")
                     }}</span>
                     <div class="rate">
@@ -138,6 +144,9 @@ export default {
 .infosMovie span {
   margin-bottom: 10px;
   font-weight: 600;
+}
+.date {
+  height: 20px;
 }
 .rate {
   width: 180px;

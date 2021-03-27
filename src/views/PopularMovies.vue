@@ -88,8 +88,7 @@ export default {
     },
   },
   setup() {
-    let popularMovies = ref([]);
-    const atualPages = ref([]);
+    const popularMovies = ref({});
     const pageNow = ref(1);
 
     fetch(
@@ -101,9 +100,7 @@ export default {
       });
 
     const seeMoreOnePage = () => {
-      console.log("more antes: " + pageNow.value);
       pageNow.value += 1;
-      console.log("more depois: " + pageNow.value);
       fetch(
         `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${pageNow.value}`
       )
@@ -115,9 +112,7 @@ export default {
 
     const seeLessOnePage = () => {
       if (pageNow.value > 1) {
-        console.log("less antes: " + pageNow.value);
         pageNow.value -= 1;
-        console.log("less antes: " + pageNow.value);
         fetch(
           `https://api.themoviedb.org/3/movie/popular?api_key=${ApiKey.apikey}&language=pt-BR&page=${pageNow.value}`
         )
@@ -132,7 +127,6 @@ export default {
       popularMovies,
       seeMoreOnePage,
       seeLessOnePage,
-      atualPages,
       pageNow,
     };
   },
@@ -166,8 +160,7 @@ export default {
   color: #ffffff;
   cursor: pointer;
 }
-.arrow,
-.arrowLess {
+.arrow {
   border-right: 10px solid;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
