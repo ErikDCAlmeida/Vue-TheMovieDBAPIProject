@@ -74,7 +74,7 @@
 
 <script>
 // @ is an alias to /src
-import ApiKey from "@/ApiKey.js";
+import ApiKey from "@/apiKey.js";
 import { ref } from "vue";
 import SearchArea from "@/components/SearchArea.vue";
 

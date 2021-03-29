@@ -63,9 +63,10 @@
 
 <script>
 import { ref, onBeforeMount } from "vue";
-import ApiKey from "@/ApiKey.js";
+import ApiKey from "@/apiKey.js";
 
 export default {
+  name: "SearchArea",
   data() {
     return {
       urlError: "http://image.tmdb.org/t/p/originalnull",

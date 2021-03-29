@@ -85,7 +85,7 @@
 <script>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import ApiKey from "@/ApiKey.js";
+import ApiKey from "@/apiKey.js";
 
 export default {
   data() {
