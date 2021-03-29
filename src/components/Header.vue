@@ -1,7 +1,9 @@
 <template>
   <header>
     <div class="containerHeader">
-      <router-link to="/" class="logo">APITheMovieDB</router-link>
+      <div>
+        <router-link to="/" class="logo">APITheMovieDB</router-link>
+      </div>
       <div class="menu">
         <nav>
           <ul>
@@ -85,5 +87,23 @@ header {
 .menu .router-link-exact-active {
   border-bottom: 3px solid #ff0000;
   color: #ff0000;
+}
+@media (max-width: 590px) {
+  header {
+    height: 105px;
+  }
+  .containerHeader {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0px 0px;
+  }
+  .menu {
+    flex: none;
+  }
+  .menu ul {
+    justify-content: none;
+    padding: 0;
+  }
 }
 </style>

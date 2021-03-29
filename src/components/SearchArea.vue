@@ -166,4 +166,21 @@ a {
   justify-content: center;
   cursor: pointer;
 }
+@media (max-width: 410px) {
+  .areaSearchMovie {
+    align-items: unset;
+    flex-direction: column;
+  }
+  input {
+    border-radius: 20px 20px 0px 0px;
+  }
+  a {
+    height: 35px;
+    width: 100%;
+    border-radius: 0px 0px 20px 20px;
+  }
+  h1 {
+    font-size: 65px;
+  }
+}
 </style>

@@ -227,4 +227,10 @@ export default {
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
 }
+@media (max-width: 340px) {
+  .btnSeeMore button,
+  .btnSeeLess button {
+    width: 40px;
+  }
+}
 </style>

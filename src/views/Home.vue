@@ -22,9 +22,7 @@
                   <div class="infosMovie">
                     <span class="titleMovie">{{ movie.title }}</span>
                     <span class="date">{{
-                      changeMonth(
-                        movie.release_date.split("-").reverse().join("/")
-                      )
+                      changeMonth(movie.release_date)
                     }}</span>
                     <div class="rate">
                       <div
@@ -93,6 +91,7 @@ export default {
   },
   methods: {
     changeMonth: function (date) {
+      date = date.split("-").reverse().join("/");
       let month = "";
       let monthNumber = "";
       for (let i = 3; i < date.length; i++) {

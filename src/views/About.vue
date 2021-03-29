@@ -27,6 +27,7 @@
 .about {
   max-width: 1200px;
   width: 100%;
+  padding: 0px 5px;
   margin: auto;
   display: flex;
   flex-direction: column;

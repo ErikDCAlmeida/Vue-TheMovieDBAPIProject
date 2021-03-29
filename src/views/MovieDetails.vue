@@ -7,7 +7,7 @@
   >
     <div class="bgMovie">
       <div class="containerMovieDetails">
-        <div class="movie" :key="elementToRerender">
+        <div class="movie">
           <div class="imgMovie">
             <img :src="pathPosterImage" :alt="movieReference.title" />
           </div>
@@ -17,7 +17,7 @@
                 {{ movieReference.title }} ({{ yearMovie }})
               </div>
               <button
-                v-if="!favorited"
+                v-if="!favouritedMovieDetails"
                 type="button"
                 class="favouriteButton"
                 @click="
@@ -25,7 +25,8 @@
                     movieReference.id,
                     movieReference.poster_path,
                     movieReference.title
-                  )
+                  );
+                  forceTheRenderElement();
                 "
               >
                 <img
@@ -38,7 +39,10 @@
                 v-else
                 type="button"
                 class="favouriteButton"
-                @click="unfavouriteMovie()"
+                @click="
+                  unfavouriteMovie(movieReference.id);
+                  forceTheRenderElement();
+                "
               >
                 <img
                   src="../assets/starFavourite.png"
@@ -84,9 +88,7 @@ import ApiKey from "@/ApiKey.js";
 export default {
   data() {
     return {
-      infosMovie: {},
       movieFavorited: {},
-      favorited: false,
       elementToRerender: 0,
       moviesStorage: [],
     };
@@ -104,31 +106,19 @@ export default {
       return year;
     },
   },
-  mounted() {
-    if (localStorage.getItem("movies")) {
-      try {
-        const moviesStoraged = JSON.parse(localStorage.getItem("movies"));
-        moviesStoraged.forEach((movie) => {
-          if (movie.movieId === this.movieReference.id) {
-            this.movieFavorited = movie;
-          }
-        });
-      } catch (e) {
-        localStorage.removeItem("movies");
-      }
-    }
-  },
-  beforeUpdate() {
-    if (this.movieFavorited.favoritedMovie) {
-      this.favorited = true;
-    }
-  },
   methods: {
     favouriteMovie(movieID, imageMovie, movieName) {
-      if (!this.favorited) {
-        if (this.movieFavorited.id != movieID) {
+      if (localStorage.getItem("movies")) {
+        let favorited = false;
+        const moviesLS = JSON.parse(localStorage.getItem("movies"));
+        moviesLS.forEach((movie) => {
+          if (movie.movieId === movieID) {
+            favorited = true;
+          }
+        });
+        if (!favorited) {
           if (movieID != null && imageMovie != null && movieName != null) {
-            this.infosMovie = {
+            const infoMovie = {
               movieId: movieID,
               imgMovie: imageMovie,
               movName: movieName,
@@ -137,27 +127,42 @@ export default {
             if (JSON.parse(localStorage.getItem("movies")) != null) {
               this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
             }
-            this.moviesStorage.push(this.infosMovie);
+            this.moviesStorage.push(infoMovie);
+            this.favouritedMovieDetails = true;
             this.saveMovie();
             this.forceTheRenderElement();
           }
         }
+      } else {
+        if (movieID != null && imageMovie != null && movieName != null) {
+          const infoMovie = {
+            movieId: movieID,
+            imgMovie: imageMovie,
+            movName: movieName,
+            favoritedMovie: true,
+          };
+          if (JSON.parse(localStorage.getItem("movies")) != null) {
+            this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
+          }
+          this.moviesStorage.push(infoMovie);
+          this.favouritedMovieDetails = true;
+          this.saveMovie();
+          this.forceTheRenderElement();
+        }
       }
     },
-    unfavouriteMovie() {
-      if (this.favorited) {
-        this.favorited = false;
-        this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
-        let cont = 0;
-        this.moviesStorage.forEach((movie) => {
-          if (movie.movieId === this.movie.id) {
-            this.moviesStorage.splice(cont, 1);
-          }
-          cont++;
-        });
-        this.saveMovie();
-        this.forceTheRenderElement();
-      }
+    unfavouriteMovie(mvId) {
+      this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
+      let cont = 0;
+      this.moviesStorage.forEach((movie) => {
+        if (movie.movieId === mvId) {
+          this.moviesStorage.splice(cont, 1);
+        }
+        cont++;
+      });
+      this.favouritedMovieDetails = false;
+      this.saveMovie();
+      this.forceTheRenderElement();
     },
     saveMovie() {
       let movies = JSON.stringify(this.moviesStorage);
@@ -172,6 +177,7 @@ export default {
     const route = useRoute();
     const pathBannerImage = ref("");
     const pathPosterImage = ref("");
+    const favouritedMovieDetails = ref(false);
 
     fetch(
       `https://api.themoviedb.org/3/movie/${route.params.id}?api_key=${ApiKey.apikey}&language=pt-BR`
@@ -183,12 +189,22 @@ export default {
           "http://image.tmdb.org/t/p/original" + data.backdrop_path;
         pathPosterImage.value =
           "http://image.tmdb.org/t/p/original" + data.poster_path;
+
+        if (localStorage.getItem("movies")) {
+          const moviesStoraged = JSON.parse(localStorage.getItem("movies"));
+          moviesStoraged.forEach((movie) => {
+            if (movie.movieId === movieReference.value.id) {
+              favouritedMovieDetails.value = movie.favoritedMovie;
+            }
+          });
+        }
       });
 
     return {
       movieReference,
       pathBannerImage,
       pathPosterImage,
+      favouritedMovieDetails,
     };
   },
 };
@@ -288,5 +304,34 @@ a:hover {
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   margin-right: 10px;
+}
+@media (max-width: 730px) {
+  .movie {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .imgMovie {
+    margin: 15px 0px;
+  }
+  .mainInfoTitle {
+    margin: 15px 0px;
+  }
+  .popularity {
+    margin-top: 20px;
+  }
+  .linkHome {
+    margin-bottom: 50px;
+  }
+}
+@media (max-width: 480px) {
+  .infosMovie {
+    padding-left: 0px;
+  }
+}
+@media (max-width: 375px) {
+  .imgMovie img {
+    width: 295px;
+  }
 }
 </style>
