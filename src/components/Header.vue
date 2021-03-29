@@ -38,6 +38,7 @@ header {
 .containerHeader {
   max-width: 1200px;
   width: 100%;
+  padding: 0px 5px;
   display: flex;
   align-items: center;
   justify-content: space-between;

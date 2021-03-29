@@ -31,6 +31,7 @@
                 <img
                   src="../assets/starNoFavourite.png"
                   alt="imgStarNoFavourite"
+                  :key="elementToRerender"
                 />
               </button>
               <button
@@ -39,7 +40,11 @@
                 class="favouriteButton"
                 @click="unfavouriteMovie()"
               >
-                <img src="../assets/starFavourite.png" alt="imgStarFavourite" />
+                <img
+                  src="../assets/starFavourite.png"
+                  alt="imgStarFavourite"
+                  :key="elementToRerender"
+                />
               </button>
             </div>
             <div class="descMovie">{{ movieReference.overview }}</div>

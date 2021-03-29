@@ -29,7 +29,7 @@
               <img
                 v-else
                 src="../assets/noImageAvailable.jpg"
-                :alt="'imageMovie-noImageMovie'"
+                alt="imageMovie-noImageMovie"
               />
             </div>
             <div class="titleMovie">{{ movie.title }}</div>

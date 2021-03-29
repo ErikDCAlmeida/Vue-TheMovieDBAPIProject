@@ -7,7 +7,7 @@
           <div class="titleArea">Filmes Mais Populares</div>
           <div class="areaHome">
             <div class="movies">
-              <div class="movie" v-for="movie in apiData" :key="movie.id">
+              <div class="movie" v-for="movie in movies" :key="movie.id">
                 <router-link :to="'/movie/' + movie.id">
                   <img
                     v-if="movie.poster_path != null"
@@ -22,7 +22,9 @@
                   <div class="infosMovie">
                     <span class="titleMovie">{{ movie.title }}</span>
                     <span class="date">{{
-                      movie.release_date.split("-").reverse().join("/")
+                      changeMonth(
+                        movie.release_date.split("-").reverse().join("/")
+                      )
                     }}</span>
                     <div class="rate">
                       <div
@@ -44,6 +46,19 @@
                     </div>
                   </div>
                 </router-link>
+                <div class="areaBtnFavourite">
+                  <button
+                    type="button"
+                    @click="
+                      favouriteMovie(movie.id, movie.poster_path, movie.title)
+                    "
+                  >
+                    Favoritar
+                  </button>
+                  <button type="button" @click="unfavouriteMovie(movie.id)">
+                    Desfavoritar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -73,10 +88,119 @@ export default {
   data() {
     return {
       path: "http://image.tmdb.org/t/p/original",
+      moviesStorage: [],
     };
   },
+  methods: {
+    changeMonth: function (date) {
+      let month = "";
+      let monthNumber = "";
+      for (let i = 3; i < date.length; i++) {
+        if (i === 5) {
+          break;
+        } else {
+          monthNumber += date[i];
+        }
+      }
+
+      switch (monthNumber) {
+        case "01":
+          month = this.dateCompleted("Janeiro", date);
+          break;
+        case "02":
+          month = this.dateCompleted("Fevereiro", date);
+          break;
+        case "03":
+          month = this.dateCompleted("Março", date);
+          break;
+        case "04":
+          month = this.dateCompleted("Abril", date);
+          break;
+        case "05":
+          month = this.dateCompleted("Maio", date);
+          break;
+        case "06":
+          month = this.dateCompleted("Junho", date);
+          break;
+        case "07":
+          month = this.dateCompleted("Julho", date);
+          break;
+        case "08":
+          month = this.dateCompleted("Agosto", date);
+          break;
+        case "09":
+          month = this.dateCompleted("Setembro", date);
+          break;
+        case "10":
+          month = this.dateCompleted("Outubro", date);
+          break;
+        case "11":
+          month = this.dateCompleted("Novembro", date);
+          break;
+        case "12":
+          month = this.dateCompleted("Dezembro", date);
+          break;
+        default:
+          break;
+      }
+      return month;
+    },
+    dateCompleted(month, date) {
+      let leftSide = "";
+      let rightSide = "";
+      for (let i = 0; i < date.length; i++) {
+        if (i >= 5) {
+          rightSide += date[i];
+        } else if (i >= 0 && i < 3) {
+          leftSide += date[i];
+        }
+      }
+
+      return leftSide + month + rightSide;
+    },
+    favouriteMovie(movieID, imageMovie, movieName) {
+      let favorited = false;
+      const moviesLS = JSON.parse(localStorage.getItem("movies"));
+      moviesLS.forEach((movie) => {
+        if (movie.movieId === movieID) {
+          favorited = true;
+        }
+      });
+      if (!favorited) {
+        if (movieID != null && imageMovie != null && movieName != null) {
+          this.infosMovie = {
+            movieId: movieID,
+            imgMovie: imageMovie,
+            movName: movieName,
+            favoritedMovie: true,
+          };
+          if (JSON.parse(localStorage.getItem("movies")) != null) {
+            this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
+          }
+          this.moviesStorage.push(this.infosMovie);
+          this.saveMovie();
+        }
+      }
+    },
+    unfavouriteMovie(mvId) {
+      let cont = 0;
+      const moviesLS = JSON.parse(localStorage.getItem("movies"));
+      moviesLS.forEach((movie) => {
+        if (movie.movieId === mvId) {
+          this.moviesStorage = moviesLS;
+          this.moviesStorage.splice(cont, 1);
+        }
+        cont++;
+      });
+      this.saveMovie();
+    },
+    saveMovie() {
+      let movies = JSON.stringify(this.moviesStorage);
+      localStorage.setItem("movies", movies);
+    },
+  },
   setup() {
-    const apiData = ref([]);
+    const movies = ref([]);
 
     const randomPage = Math.floor(Math.random() * (500 - 2) + 2);
     fetch(
@@ -84,11 +208,11 @@ export default {
     )
       .then((response) => response.json())
       .then((data) => {
-        apiData.value = data.results;
+        movies.value = data.results;
       });
 
     return {
-      apiData,
+      movies,
     };
   },
 };
@@ -131,6 +255,36 @@ export default {
   width: inherit;
   height: 300px;
   border-radius: 20px;
+}
+.areaBtnFavourite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+.areaBtnFavourite button {
+  padding: 5px 0px;
+  width: 90%;
+  border: 2px solid #000;
+  background: transparent;
+  border-radius: 5px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+.areaBtnFavourite button:last-child {
+  margin-bottom: 0px;
+}
+.areaBtnFavourite button:hover {
+  background: #000;
+  color: #ff0000;
+}
+.areaBtnFavourite button:last-child:hover {
+  border-color: #ff0000;
+  background: #ff0000;
+  color: #ffffff;
 }
 .infosMovie {
   display: flex;

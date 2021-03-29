@@ -83,8 +83,12 @@ a {
 }
 a .titleMovie {
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 17px;
+  height: 90px;
   margin: 10px 0px;
   color: #000;
 }

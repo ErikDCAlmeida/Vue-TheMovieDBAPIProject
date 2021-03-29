@@ -1,9 +1,39 @@
 <template>
   <div class="areaSearch">
     <div
+      v-if="pathMovieImage != urlError"
       class="containerSearch"
       :style="{
         backgroundImage: 'url(' + pathMovieImage + ')',
+      }"
+    >
+      <div class="bgSearch">
+        <div class="textSearch">
+          <h1>Bem vindo(a)!</h1>
+          <h2>
+            Informações sobre seus filmes e séries favoritos você encontra aqui!
+          </h2>
+        </div>
+        <div class="areaSearchMovie">
+          <input
+            id="search"
+            type="text"
+            name="search"
+            placeholder="Digite o filme que deseja encontrar!"
+            v-model="search"
+            autocomplete="off"
+          />
+          <router-link @click="searchMovies()" :to="'/searchresults/' + search">
+            Pesquisar</router-link
+          >
+        </div>
+      </div>
+    </div>
+    <div
+      v-else
+      class="containerSearch"
+      :style="{
+        backgroundImage: 'url(../assets/imageDefaultBanner.jpg)',
       }"
     >
       <div class="bgSearch">
@@ -36,6 +66,11 @@ import { ref, onBeforeMount } from "vue";
 import ApiKey from "@/ApiKey.js";
 
 export default {
+  data() {
+    return {
+      urlError: "http://image.tmdb.org/t/p/originalnull",
+    };
+  },
   setup() {
     const search = ref("");
     const pathMovieImage = ref("");
