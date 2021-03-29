@@ -7,27 +7,55 @@
   >
     <div class="bgMovie">
       <div class="containerMovieDetails">
-        <div class="movie">
+        <div class="movie" :key="elementToRerender">
           <div class="imgMovie">
-            <img :src="pathPosterImage" :alt="movie.title" />
+            <img :src="pathPosterImage" :alt="movieReference.title" />
           </div>
           <div class="infosMovie">
             <div class="mainInfoTitle">
-              <div class="titleMovie">{{ movie.title }} ({{ yearMovie }})</div>
-              <div class="favorite">FV</div>
+              <div class="titleMovie">
+                {{ movieReference.title }} ({{ yearMovie }})
+              </div>
+              <button
+                v-if="!favorited"
+                type="button"
+                class="favouriteButton"
+                @click="
+                  favouriteMovie(
+                    movieReference.id,
+                    movieReference.poster_path,
+                    movieReference.title
+                  )
+                "
+              >
+                <img
+                  src="../assets/starNoFavourite.png"
+                  alt="imgStarNoFavourite"
+                />
+              </button>
+              <button
+                v-else
+                type="button"
+                class="favouriteButton"
+                @click="unfavouriteMovie()"
+              >
+                <img src="../assets/starFavourite.png" alt="imgStarFavourite" />
+              </button>
             </div>
-            <div class="descMovie">{{ movie.overview }}</div>
+            <div class="descMovie">{{ movieReference.overview }}</div>
             <div class="popularity">
               <span class="titPercent">Avaliação dos usuários</span>
               <div
                 class="rateBar"
                 :style="{
                   background: `linear-gradient(90deg, #ff0000 ${Math.floor(
-                    movie.vote_average * 10
-                  )}%, #ffffff ${100 - Math.floor(movie.vote_average * 10)}%)`,
+                    movieReference.vote_average * 10
+                  )}%, #ffffff ${
+                    100 - Math.floor(movieReference.vote_average * 10)
+                  }%)`,
                 }"
               >
-                <span>{{ movie.vote_average * 10 }}%</span>
+                <span>{{ movieReference.vote_average * 10 }}%</span>
               </div>
             </div>
           </div>
@@ -44,46 +72,116 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
 import ApiKey from "@/ApiKey.js";
 
 export default {
+  data() {
+    return {
+      infosMovie: {},
+      movieFavorited: {},
+      favorited: false,
+      elementToRerender: 0,
+      moviesStorage: [],
+    };
+  },
   computed: {
     yearMovie: function () {
       let year = "";
-      for (let i in this.movie.release_date) {
+      for (let i in this.movieReference.release_date) {
         if (year.length === 4) {
           break;
         } else {
-          year += this.movie.release_date[i];
+          year += this.movieReference.release_date[i];
         }
       }
       return year;
     },
   },
+  mounted() {
+    if (localStorage.getItem("movies")) {
+      try {
+        const moviesStoraged = JSON.parse(localStorage.getItem("movies"));
+        moviesStoraged.forEach((movie) => {
+          if (movie.movieId === this.movieReference.id) {
+            this.movieFavorited = movie;
+          }
+        });
+      } catch (e) {
+        localStorage.removeItem("movies");
+      }
+    }
+  },
+  beforeUpdate() {
+    if (this.movieFavorited.favoritedMovie) {
+      this.favorited = true;
+    }
+  },
+  methods: {
+    favouriteMovie(movieID, imageMovie, movieName) {
+      if (!this.favorited) {
+        if (this.movieFavorited.id != movieID) {
+          if (movieID != null && imageMovie != null && movieName != null) {
+            this.infosMovie = {
+              movieId: movieID,
+              imgMovie: imageMovie,
+              movName: movieName,
+              favoritedMovie: true,
+            };
+            if (JSON.parse(localStorage.getItem("movies")) != null) {
+              this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
+            }
+            this.moviesStorage.push(this.infosMovie);
+            this.saveMovie();
+            this.forceTheRenderElement();
+          }
+        }
+      }
+    },
+    unfavouriteMovie() {
+      if (this.favorited) {
+        this.favorited = false;
+        this.moviesStorage = JSON.parse(localStorage.getItem("movies"));
+        let cont = 0;
+        this.moviesStorage.forEach((movie) => {
+          if (movie.movieId === this.movie.id) {
+            this.moviesStorage.splice(cont, 1);
+          }
+          cont++;
+        });
+        this.saveMovie();
+        this.forceTheRenderElement();
+      }
+    },
+    saveMovie() {
+      let movies = JSON.stringify(this.moviesStorage);
+      localStorage.setItem("movies", movies);
+    },
+    forceTheRenderElement() {
+      this.elementToRerender += 1;
+    },
+  },
   setup() {
-    const movie = ref({});
+    const movieReference = ref({});
     const route = useRoute();
     const pathBannerImage = ref("");
     const pathPosterImage = ref("");
 
-    onBeforeMount(
-      fetch(
-        `https://api.themoviedb.org/3/movie/${route.params.id}?api_key=${ApiKey.apikey}&language=pt-BR`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          movie.value = data;
-          pathBannerImage.value =
-            "http://image.tmdb.org/t/p/original" + data.backdrop_path;
-          pathPosterImage.value =
-            "http://image.tmdb.org/t/p/original" + data.poster_path;
-        })
-    );
+    fetch(
+      `https://api.themoviedb.org/3/movie/${route.params.id}?api_key=${ApiKey.apikey}&language=pt-BR`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        movieReference.value = data;
+        pathBannerImage.value =
+          "http://image.tmdb.org/t/p/original" + data.backdrop_path;
+        pathPosterImage.value =
+          "http://image.tmdb.org/t/p/original" + data.poster_path;
+      });
 
     return {
-      movie,
+      movieReference,
       pathBannerImage,
       pathPosterImage,
     };
@@ -127,8 +225,14 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.favorite {
-  background: green;
+.favouriteButton {
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.favouriteButton img {
+  width: 35px;
 }
 .titleMovie {
   font-weight: bold;

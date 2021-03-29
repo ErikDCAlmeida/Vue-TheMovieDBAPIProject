@@ -95,6 +95,9 @@ export default {
 </script>
 
 <style scoped>
+.home {
+  margin-bottom: 40px;
+}
 .areaMovies {
   width: 100%;
   max-width: 1200px;

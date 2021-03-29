@@ -4,7 +4,6 @@
     <main>
       <router-view />
     </main>
-    <footer></footer>
   </div>
 </template>
 
@@ -21,10 +20,6 @@ export default {
 </script>
 
 <style>
-footer {
-  height: 400px;
-  background: #ddd;
-}
 * {
   box-sizing: border-box;
 }

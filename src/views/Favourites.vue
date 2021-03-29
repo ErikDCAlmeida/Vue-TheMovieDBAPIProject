@@ -2,23 +2,52 @@
   <div class="favourites">
     <h1>Seus filmes favoritos</h1>
     <div class="areaFavouritesMovies">
-      <div class="movie">
-        <router-link to="/movie/0">
+      <div class="movie" v-for="movie in movies" :key="'movie-' + movie">
+        <router-link :to="'/movie/' + movie.movieId">
           <div class="imgMovie">
-            <img src="@/assets/noImageAvailable.jpg" alt="" />
+            <img
+              :src="'http://image.tmdb.org/t/p/original' + movie.imgMovie"
+              :alt="'imgMovie-' + movie.movName"
+            />
           </div>
           <div class="titleMovie">
-            Título do Filme Bem Grande Para Pegar o Máximo
+            {{ movie.movName }}
           </div>
         </router-link>
-        <div class="btnRemoveFavourite">Remover Favorito</div>
+        <div class="btnRemoveFavourite" @click="removeFavourite(movie.movieId)">
+          Remover Favorito
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      movies: JSON.parse(localStorage.getItem("movies")),
+      moviesStorage: [],
+    };
+  },
+  methods: {
+    removeFavourite(mvId) {
+      let cont = 0;
+      this.movies.forEach((movie) => {
+        if (movie.movieId === mvId) {
+          this.moviesStorage = this.movies;
+          this.moviesStorage.splice(cont, 1);
+        }
+        cont++;
+      });
+      this.saveMovie();
+    },
+    saveMovie() {
+      let movies = JSON.stringify(this.moviesStorage);
+      localStorage.setItem("movies", movies);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -45,7 +74,7 @@ export default {};
 }
 .imgMovie img {
   width: 200px;
-  height: 250px;
+  height: 300px;
   border-radius: 10px;
   box-shadow: 0px 0px 2px 2px #000;
 }
