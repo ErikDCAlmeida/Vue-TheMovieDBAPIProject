@@ -160,11 +160,13 @@ export default {
     favouriteMovie(movieID, imageMovie, movieName) {
       let favorited = false;
       const moviesLS = JSON.parse(localStorage.getItem("movies"));
-      moviesLS.forEach((movie) => {
-        if (movie.movieId === movieID) {
-          favorited = true;
-        }
-      });
+      if (moviesLS != null) {
+        moviesLS.forEach((movie) => {
+          if (movie.movieId === movieID) {
+            favorited = true;
+          }
+        });
+      }
       if (!favorited) {
         if (movieID != null && imageMovie != null && movieName != null) {
           this.infosMovie = {
