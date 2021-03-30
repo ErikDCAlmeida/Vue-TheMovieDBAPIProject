@@ -3,23 +3,25 @@
 - Antes de qualquer coisa é necessário que você saiba que o projeto foi criado em Vue 3.
 - Foi utilizado o Yarn para configuração e execução do projeto, portanto, é necessário ter Yarn instalado no seu computador.
 
-## Após instalar o Yarn e fazer o download do projeto, execute dentro da pasta o comando abaixo:
+## Após instalar o Yarn e fazer o download do projeto, execute dentro da pasta o comando abaixo utilizando o CMD ou se você usar o VSCode abrindo o terminal e digitando o comando:
 ```
 yarn install
 
 Responsável por criar todos modulos e arquivos necessários para a execução do projeto.
 ```
 
-### Para executar o projeto, digite o comando abaixo:
+## Para executar o projeto, digite o comando abaixo, da mesma maneira que o anterior:
 ```
 yarn run serve
 
 Após a compilação, abra no seu navegador a porta 8080, ou seja, digite: "localhost:8080".
 ```
 
-### Não obrigatório, mas como algumas coisas diferem do windows para o linux e iOS, é aconselhavél utilizar o comando abaixo:
+### Não obrigatório, mas como algumas coisas diferem do windows para o linux e iOS, é aconselhavél utilizar o comando abaixo, caso o projeto fique com vários warnings nas páginas, utilize esse comando na pasta do projeto, depois salve as páginas e possivelmente o erro sumirá:
 ```
 yarn lint
+
+Ele aparece porque o espaçamento e algumas coisas mais diferem para cada SO.
 ```
 
 # Consumo da API
